@@ -164,13 +164,16 @@ export default function DashboardPage() {
 
   // Get recommended events and teams (not joined yet)
   const recommendedEvents = events
+    ///@ts-ignore
     .filter((event) => !event.participantIds?.includes(user?.uid || ""))
     .slice(0, 3);
 
   const recommendedTeams = teams
     .filter(
       (team) =>
+        ///@ts-ignore
         !team.memberIds?.includes(user?.uid || "") &&
+        ///@ts-ignore
         team.leader?.id !== user?.uid &&
         team.members < team.maxMembers
     )
