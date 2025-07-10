@@ -18,6 +18,7 @@ import {
   X,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { ProfileModal } from "./profile-modal";
 
 import { auth } from "@/lib/firebase";
 import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
@@ -154,14 +155,7 @@ export default function Sidebar() {
               </div>
             </div>
             <div className="space-y-1">
-              {/* <Button
-                variant="ghost"
-                size="sm"
-                className="w-full justify-start"
-              >
-                <Settings className="h-4 w-4 mr-2" />
-                Settings
-              </Button> */}
+              <ProfileModal />
               <Button
                 variant="ghost"
                 size="sm"
