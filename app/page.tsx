@@ -1,10 +1,45 @@
-import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { ArrowRight, Users, Zap, Target, Star, Quote } from "lucide-react"
-import Link from "next/link"
+"use client";
+
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { ArrowRight, Users, Zap, Target, Star, Quote } from "lucide-react";
+import Link from "next/link";
+import { useAuthUser } from "@/lib/useAuthUser";
+import { signOut } from "firebase/auth";
+import { auth } from "@/lib/firebase";
+import { useState, useRef, useEffect } from "react";
 
 export default function LandingPage() {
+  const { user, loading } = useAuthUser();
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const avatarRef = useRef<HTMLButtonElement>(null);
+
+  // Close dropdown on outside click
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (
+        avatarRef.current &&
+        !avatarRef.current.contains(event.target as Node)
+      ) {
+        setDropdownOpen(false);
+      }
+    }
+    if (dropdownOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    } else {
+      document.removeEventListener("mousedown", handleClickOutside);
+    }
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [dropdownOpen]);
+
+  const handleLogout = async () => {
+    await signOut(auth);
+    setDropdownOpen(false);
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
       {/* Navigation */}
@@ -15,15 +50,63 @@ export default function LandingPage() {
               <div className="w-8 h-8 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg flex items-center justify-center">
                 <span className="text-white font-bold text-sm">CS</span>
               </div>
-              <span className="text-xl font-bold text-gray-900">CollabSphere</span>
+              <span className="text-xl font-bold text-gray-900">
+                CollabSphere
+              </span>
             </div>
-            <div className="flex items-center space-x-4">
-              <Link href="/auth">
-                <Button variant="ghost">Sign In</Button>
-              </Link>
-              <Link href="/auth">
-                <Button>Get Started</Button>
-              </Link>
+            <div className="flex items-center space-x-4 relative">
+              {!loading && !user && (
+                <Link href="/auth">
+                  <Button variant="ghost">Sign In</Button>
+                </Link>
+              )}
+              {!loading && user && (
+                <>
+                  <button
+                    ref={avatarRef}
+                    className="focus:outline-none"
+                    onClick={() => setDropdownOpen((v) => !v)}
+                  >
+                    {user.photoURL ? (
+                      <img
+                        src={user.photoURL}
+                        alt="avatar"
+                        className="w-9 h-9 rounded-full border border-gray-300 shadow-sm"
+                      />
+                    ) : (
+                      <div className="w-9 h-9 rounded-full bg-gray-200 flex items-center justify-center text-gray-600 font-bold border border-gray-300 shadow-sm">
+                        {user.displayName
+                          ? user.displayName
+                              .split(" ")
+                              .map((n) => n[0])
+                              .join("")
+                              .toUpperCase()
+                          : "U"}
+                      </div>
+                    )}
+                  </button>
+                  {dropdownOpen && (
+                    <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-lg z-50">
+                      <div className="px-4 py-3 border-b border-gray-100">
+                        <div className="font-semibold text-gray-900">
+                          {user.displayName || user.email}
+                        </div>
+                        {user.email && (
+                          <div className="text-xs text-gray-500 truncate">
+                            {user.email}
+                          </div>
+                        )}
+                      </div>
+                      <button
+                        className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-b-lg"
+                        onClick={handleLogout}
+                      >
+                        Log out
+                      </button>
+                    </div>
+                  )}
+                </>
+              )}
             </div>
           </div>
         </div>
@@ -37,11 +120,14 @@ export default function LandingPage() {
           </Badge>
           <h1 className="text-4xl sm:text-6xl font-bold text-gray-900 mb-6 leading-tight">
             Find your next team, project, or hackathon —{" "}
-            <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">smarter</span>
+            <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+              smarter
+            </span>
           </h1>
           <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
-            CollabSphere connects college tech communities, helping students discover hackathons, join project teams,
-            and find the perfect collaborators using AI-powered matching.
+            CollabSphere connects college tech communities, helping students
+            discover hackathons, join project teams, and find the perfect
+            collaborators using AI-powered matching.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link href="/auth">
@@ -51,7 +137,11 @@ export default function LandingPage() {
               </Button>
             </Link>
             <Link href="/events">
-              <Button size="lg" variant="outline" className="text-lg px-8 py-3 bg-transparent">
+              <Button
+                size="lg"
+                variant="outline"
+                className="text-lg px-8 py-3 bg-transparent"
+              >
                 Explore Events
               </Button>
             </Link>
@@ -63,7 +153,9 @@ export default function LandingPage() {
       <section className="py-20 px-4 sm:px-6 lg:px-8 bg-white">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
-            <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">How CollabSphere Works</h2>
+            <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
+              How CollabSphere Works
+            </h2>
             <p className="text-xl text-gray-600 max-w-2xl mx-auto">
               Three simple steps to find your perfect collaboration
             </p>
@@ -76,7 +168,8 @@ export default function LandingPage() {
                 </div>
                 <h3 className="text-xl font-semibold mb-4">1. Discover</h3>
                 <p className="text-gray-600">
-                  Browse ongoing hackathons, events, and open project teams in your area and interests.
+                  Browse ongoing hackathons, events, and open project teams in
+                  your area and interests.
                 </p>
               </CardContent>
             </Card>
@@ -87,7 +180,8 @@ export default function LandingPage() {
                 </div>
                 <h3 className="text-xl font-semibold mb-4">2. Connect</h3>
                 <p className="text-gray-600">
-                  Use AI to describe your ideas and get matched with teammates who complement your skills.
+                  Use AI to describe your ideas and get matched with teammates
+                  who complement your skills.
                 </p>
               </CardContent>
             </Card>
@@ -98,7 +192,8 @@ export default function LandingPage() {
                 </div>
                 <h3 className="text-xl font-semibold mb-4">3. Collaborate</h3>
                 <p className="text-gray-600">
-                  Join teams, work on exciting projects, and build amazing things together.
+                  Join teams, work on exciting projects, and build amazing
+                  things together.
                 </p>
               </CardContent>
             </Card>
@@ -110,9 +205,12 @@ export default function LandingPage() {
       <section className="py-20 px-4 sm:px-6 lg:px-8 bg-gray-50">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
-            <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">What Students Say</h2>
+            <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
+              What Students Say
+            </h2>
             <p className="text-xl text-gray-600">
-              Join thousands of students who've found their perfect collaborations
+              Join thousands of students who've found their perfect
+              collaborations
             </p>
           </div>
           <div className="grid md:grid-cols-3 gap-8">
@@ -143,13 +241,18 @@ export default function LandingPage() {
                 <CardContent className="pt-6">
                   <div className="flex mb-4">
                     {[...Array(testimonial.rating)].map((_, i) => (
-                      <Star key={i} className="h-5 w-5 text-yellow-400 fill-current" />
+                      <Star
+                        key={i}
+                        className="h-5 w-5 text-yellow-400 fill-current"
+                      />
                     ))}
                   </div>
                   <Quote className="h-8 w-8 text-gray-300 mb-4" />
                   <p className="text-gray-600 mb-6">"{testimonial.content}"</p>
                   <div>
-                    <p className="font-semibold text-gray-900">{testimonial.name}</p>
+                    <p className="font-semibold text-gray-900">
+                      {testimonial.name}
+                    </p>
                     <p className="text-sm text-gray-500">{testimonial.role}</p>
                   </div>
                 </CardContent>
@@ -162,9 +265,12 @@ export default function LandingPage() {
       {/* CTA Section */}
       <section className="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-r from-blue-600 to-purple-600">
         <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-3xl sm:text-4xl font-bold text-white mb-6">Ready to Find Your Perfect Team?</h2>
+          <h2 className="text-3xl sm:text-4xl font-bold text-white mb-6">
+            Ready to Find Your Perfect Team?
+          </h2>
           <p className="text-xl text-blue-100 mb-8">
-            Join CollabSphere today and start building amazing projects with talented students.
+            Join CollabSphere today and start building amazing projects with
+            talented students.
           </p>
           <Link href="/auth">
             <Button size="lg" variant="secondary" className="text-lg px-8 py-3">
@@ -203,5 +309,5 @@ export default function LandingPage() {
         </div>
       </footer>
     </div>
-  )
+  );
 }
