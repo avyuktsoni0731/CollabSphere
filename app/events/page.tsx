@@ -1,13 +1,33 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
-import { Input } from "@/components/ui/input"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Calendar, MapPin, Users, Clock, Search, Filter, Star } from "lucide-react"
-import Sidebar from "@/components/sidebar"
+import { useState } from "react";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Calendar,
+  MapPin,
+  Users,
+  Clock,
+  Search,
+  Filter,
+  Star,
+} from "lucide-react";
+import Sidebar from "@/components/sidebar";
 
 const events = [
   {
@@ -29,7 +49,8 @@ const events = [
   {
     id: 2,
     name: "Stanford TreeHacks",
-    description: "Stanford's annual hackathon focused on creating technology for social good and environmental impact.",
+    description:
+      "Stanford's annual hackathon focused on creating technology for social good and environmental impact.",
     date: "March 22-24, 2024",
     location: "Stanford University",
     tags: ["IoT", "Hardware", "AI", "Sustainability"],
@@ -58,7 +79,8 @@ const events = [
   {
     id: 4,
     name: "UCLA DevFest",
-    description: "A celebration of development across all platforms - web, mobile, desktop, and emerging technologies.",
+    description:
+      "A celebration of development across all platforms - web, mobile, desktop, and emerging technologies.",
     date: "April 12-14, 2024",
     location: "UCLA Campus",
     tags: ["Web Dev", "Mobile", "Cloud", "DevOps"],
@@ -72,7 +94,8 @@ const events = [
   {
     id: 5,
     name: "Caltech Space Tech Challenge",
-    description: "Build solutions for space exploration and satellite technology with NASA mentors.",
+    description:
+      "Build solutions for space exploration and satellite technology with NASA mentors.",
     date: "April 19-21, 2024",
     location: "Caltech",
     tags: ["Space Tech", "Hardware", "Embedded", "C++"],
@@ -86,7 +109,8 @@ const events = [
   {
     id: 6,
     name: "UCSD Health Hack",
-    description: "Healthcare-focused hackathon addressing real-world medical challenges with technology solutions.",
+    description:
+      "Healthcare-focused hackathon addressing real-world medical challenges with technology solutions.",
     date: "May 3-5, 2024",
     location: "UC San Diego",
     tags: ["Healthcare", "AI", "Mobile", "Data Science"],
@@ -97,35 +121,45 @@ const events = [
     prizes: "$35,000",
     organizer: "UCSD Medical School",
   },
-]
+];
 
 export default function EventsPage() {
-  const [searchTerm, setSearchTerm] = useState("")
-  const [selectedDomain, setSelectedDomain] = useState("all")
-  const [selectedDifficulty, setSelectedDifficulty] = useState("all")
-  const [sortBy, setSortBy] = useState("date")
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedDomain, setSelectedDomain] = useState("all");
+  const [selectedDifficulty, setSelectedDifficulty] = useState("all");
+  const [sortBy, setSortBy] = useState("date");
 
   const filteredEvents = events.filter((event) => {
     const matchesSearch =
       event.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      event.description.toLowerCase().includes(searchTerm.toLowerCase())
+      event.description.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesDomain =
-      selectedDomain === "all" || event.tags.some((tag) => tag.toLowerCase().includes(selectedDomain.toLowerCase()))
-    const matchesDifficulty = selectedDifficulty === "all" || event.difficulty === selectedDifficulty
+      selectedDomain === "all" ||
+      event.tags.some((tag) =>
+        tag.toLowerCase().includes(selectedDomain.toLowerCase())
+      );
+    const matchesDifficulty =
+      selectedDifficulty === "all" || event.difficulty === selectedDifficulty;
 
-    return matchesSearch && matchesDomain && matchesDifficulty
-  })
+    return matchesSearch && matchesDomain && matchesDifficulty;
+  });
 
   const sortedEvents = [...filteredEvents].sort((a, b) => {
     if (sortBy === "date") {
-      return new Date(a.date.split("-")[0]).getTime() - new Date(b.date.split("-")[0]).getTime()
+      return (
+        new Date(a.date.split("-")[0]).getTime() -
+        new Date(b.date.split("-")[0]).getTime()
+      );
     } else if (sortBy === "popularity") {
-      return b.participants - a.participants
+      return b.participants - a.participants;
     } else if (sortBy === "prizes") {
-      return Number.parseInt(b.prizes.replace(/[^0-9]/g, "")) - Number.parseInt(a.prizes.replace(/[^0-9]/g, ""))
+      return (
+        Number.parseInt(b.prizes.replace(/[^0-9]/g, "")) -
+        Number.parseInt(a.prizes.replace(/[^0-9]/g, ""))
+      );
     }
-    return 0
-  })
+    return 0;
+  });
 
   return (
     <div className="flex min-h-screen bg-gray-50">
@@ -135,8 +169,12 @@ export default function EventsPage() {
         <div className="p-6 lg:p-8">
           {/* Header */}
           <div className="mb-8">
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">Discover Events</h1>
-            <p className="text-gray-600">Find hackathons, workshops, and tech events near you</p>
+            <h1 className="text-3xl font-bold text-gray-900 mb-2">
+              Discover Events
+            </h1>
+            <p className="text-gray-600">
+              Find hackathons, workshops, and tech events near you
+            </p>
           </div>
 
           {/* Filters */}
@@ -152,7 +190,10 @@ export default function EventsPage() {
                     className="pl-10"
                   />
                 </div>
-                <Select value={selectedDomain} onValueChange={setSelectedDomain}>
+                <Select
+                  value={selectedDomain}
+                  onValueChange={setSelectedDomain}
+                >
                   <SelectTrigger>
                     <SelectValue placeholder="Tech Domain" />
                   </SelectTrigger>
@@ -166,13 +207,18 @@ export default function EventsPage() {
                     <SelectItem value="healthcare">Healthcare</SelectItem>
                   </SelectContent>
                 </Select>
-                <Select value={selectedDifficulty} onValueChange={setSelectedDifficulty}>
+                <Select
+                  value={selectedDifficulty}
+                  onValueChange={setSelectedDifficulty}
+                >
                   <SelectTrigger>
                     <SelectValue placeholder="Difficulty" />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="all">All Levels</SelectItem>
-                    <SelectItem value="All Levels">Beginner Friendly</SelectItem>
+                    <SelectItem value="All Levels">
+                      Beginner Friendly
+                    </SelectItem>
                     <SelectItem value="Intermediate">Intermediate</SelectItem>
                     <SelectItem value="Advanced">Advanced</SelectItem>
                   </SelectContent>
@@ -196,19 +242,32 @@ export default function EventsPage() {
             {sortedEvents.map((event) => (
               <Card
                 key={event.id}
-                className={`hover:shadow-lg transition-shadow ${event.featured ? "ring-2 ring-blue-500" : ""}`}
+                className={`hover:shadow-lg transition-shadow ${
+                  event.featured ? "ring-2 ring-blue-500" : ""
+                }`}
               >
                 <CardHeader>
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
                       <div className="flex items-center gap-2 mb-2">
                         <CardTitle className="text-lg">{event.name}</CardTitle>
-                        {event.featured && <Star className="h-4 w-4 text-yellow-500 fill-current" />}
+                        {event.featured && (
+                          <Star className="h-4 w-4 text-yellow-500 fill-current" />
+                        )}
                       </div>
-                      <CardDescription className="text-sm">{event.description}</CardDescription>
+                      <CardDescription className="text-sm">
+                        {event.description}
+                      </CardDescription>
                     </div>
-                    <Badge variant={event.status === "upcoming" ? "default" : "secondary"} className="ml-2">
-                      {event.status === "upcoming" ? "Upcoming" : "Open Registration"}
+                    <Badge
+                      variant={
+                        event.status === "upcoming" ? "default" : "secondary"
+                      }
+                      className="ml-2"
+                    >
+                      {event.status === "upcoming"
+                        ? "Upcoming"
+                        : "Open Registration"}
                     </Badge>
                   </div>
                 </CardHeader>
@@ -240,12 +299,18 @@ export default function EventsPage() {
                     </div>
 
                     <div className="flex items-center justify-between pt-4">
-                      <span className="text-sm text-gray-500">by {event.organizer}</span>
+                      <span className="text-sm text-gray-500">
+                        by {event.organizer}
+                      </span>
                       <div className="flex gap-2">
                         <Button variant="outline" size="sm">
                           View Details
                         </Button>
-                        <Button size="sm">{event.status === "upcoming" ? "Join Event" : "Register"}</Button>
+                        <Button size="sm">
+                          {event.status === "upcoming"
+                            ? "Join Event"
+                            : "Register"}
+                        </Button>
                       </div>
                     </div>
                   </div>
@@ -257,12 +322,16 @@ export default function EventsPage() {
           {sortedEvents.length === 0 && (
             <div className="text-center py-12">
               <Filter className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-              <h3 className="text-lg font-medium text-gray-900 mb-2">No events found</h3>
-              <p className="text-gray-500">Try adjusting your filters or search terms</p>
+              <h3 className="text-lg font-medium text-gray-900 mb-2">
+                No events found
+              </h3>
+              <p className="text-gray-500">
+                Try adjusting your filters or search terms
+              </p>
             </div>
           )}
         </div>
       </div>
     </div>
-  )
+  );
 }
