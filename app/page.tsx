@@ -9,6 +9,7 @@ import { useAuthUser } from "@/lib/useAuthUser";
 import { signOut } from "firebase/auth";
 import { auth } from "@/lib/firebase";
 import { useState, useRef, useEffect } from "react";
+import Image from "next/image";
 
 export default function LandingPage() {
   const { user, loading } = useAuthUser();
@@ -68,10 +69,12 @@ export default function LandingPage() {
                     onClick={() => setDropdownOpen((v) => !v)}
                   >
                     {user.photoURL ? (
-                      <img
+                      <Image
                         src={user.photoURL}
                         alt="avatar"
                         className="w-9 h-9 rounded-full border border-gray-300 shadow-sm"
+                        width={1080}
+                        height={1080}
                       />
                     ) : (
                       <div className="w-9 h-9 rounded-full bg-gray-200 flex items-center justify-center text-gray-600 font-bold border border-gray-300 shadow-sm">
