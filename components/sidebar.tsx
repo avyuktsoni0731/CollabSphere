@@ -100,7 +100,7 @@ export default function Sidebar() {
       >
         <div className="flex flex-col h-full">
           {/* Logo */}
-          <a
+          <Link
             className="flex items-center px-6 py-4 border-b border-gray-200"
             href="/"
           >
@@ -110,7 +110,7 @@ export default function Sidebar() {
             <span className="ml-2 text-xl font-bold text-gray-900">
               CollabSphere
             </span>
-          </a>
+          </Link>
 
           {/* Navigation */}
           <nav className="flex-1 px-4 py-6 space-y-2">

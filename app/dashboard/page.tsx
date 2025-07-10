@@ -77,7 +77,7 @@ const recentTeams = [
 ];
 
 export default function DashboardPage() {
-  const { user, loading } = useAuthUser();
+  const { user } = useAuthUser();
 
   const router = useRouter();
 
