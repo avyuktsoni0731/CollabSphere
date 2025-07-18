@@ -4,6 +4,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "sonner";
 import Script from "next/dist/client/script";
+import { GoogleAnalytics } from "@/components/GoogleAnalytics"; // path as per your structure
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -29,10 +30,14 @@ export default function RootLayout({
           {`
             window.dataLayer = window.dataLayer || [];
             function gtag(){dataLayer.push(arguments);}
+            window.gtag = gtag;
             gtag('js', new Date());
-            gtag('config', '${process.env.NEXT_PUBLIC_G_ANALYTICS_ID}');
+            gtag('config', '${process.env.NEXT_PUBLIC_G_ANALYTICS_ID}', {
+              page_path: window.location.pathname,
+            });
           `}
         </Script>
+        <GoogleAnalytics />
         {children}
         <Toaster position="top-right" />
       </body>
